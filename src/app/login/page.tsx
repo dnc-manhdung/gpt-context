@@ -1,16 +1,16 @@
 'use client'
 
-import { Button, Center, TextInput } from '@mantine/core'
+import { Button, Center, TextInput, Text } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useState } from 'react'
 
-interface LoginFormValues {
+interface FormValues {
   username: string
   password: string
 }
 
 const Page = () => {
-  const loginForm = useForm<LoginFormValues>({
+  const form = useForm<FormValues>({
     mode: 'uncontrolled',
     initialValues: {
       username: '',
@@ -23,28 +23,30 @@ const Page = () => {
   })
 
   const [submittedValues, setSubmittedValues] = useState<
-    typeof loginForm.values | null
+    typeof form.values | null
   >(null)
 
   return (
     <Center className="w-screen h-screen">
       <Center className="border border-gray-300 rounded-lg p-8 flex flex-col gap-4">
-        <span className="text-4xl">Login</span>
+        <Text span className="text-4xl">
+          Login
+        </Text>
         <form
-          onSubmit={loginForm.onSubmit(setSubmittedValues)}
+          onSubmit={form.onSubmit(setSubmittedValues)}
           className="flex flex-col items-center"
         >
           <TextInput
-            {...loginForm.getInputProps('username')}
-            key={loginForm.key('username')}
+            {...form.getInputProps('username')}
+            key={form.key('username')}
             label="Username"
             placeholder="Username"
             size="lg"
             withAsterisk
           />
           <TextInput
-            {...loginForm.getInputProps('password')}
-            key={loginForm.key('password')}
+            {...form.getInputProps('password')}
+            key={form.key('password')}
             label="Password"
             placeholder="Password"
             size="lg"
@@ -55,6 +57,14 @@ const Page = () => {
           <Button type="submit" mt="lg">
             Login
           </Button>
+          <Text
+            component="a"
+            href="/register"
+            mt="lg"
+            className="text-cyan-500 font-bold"
+          >
+            Do not have any account?
+          </Text>
         </form>
       </Center>
     </Center>
