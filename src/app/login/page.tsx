@@ -3,6 +3,7 @@
 import { Button, Center, TextInput, Text } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useState } from 'react'
+import { useAuth } from '~/hooks/useAuth'
 
 interface FormValues {
   username: string
@@ -10,6 +11,10 @@ interface FormValues {
 }
 
 const Page = () => {
+  const [message, setMessage] = useState<string>()
+
+  const { login } = useAuth
+
   const form = useForm<FormValues>({
     mode: 'uncontrolled',
     initialValues: {
@@ -22,19 +27,20 @@ const Page = () => {
     }
   })
 
-  const [submittedValues, setSubmittedValues] = useState<
-    typeof form.values | null
-  >(null)
+  const handleSubmit = () => {
+    const res = login()
+    setMessage(res.message)
+  }
 
   return (
     <Center className="w-screen h-screen">
-      <Center className="border border-gray-300 rounded-lg p-8 flex flex-col gap-4">
+      <Center className="p-8 flex flex-col gap-4">
         <Text span className="text-4xl">
           Login
         </Text>
         <form
-          onSubmit={form.onSubmit(setSubmittedValues)}
-          className="flex flex-col items-center"
+          onSubmit={form.onSubmit(() => handleSubmit())}
+          className="flex flex-col items-center w-[300px]"
         >
           <TextInput
             {...form.getInputProps('username')}
@@ -43,6 +49,7 @@ const Page = () => {
             placeholder="Username"
             size="lg"
             withAsterisk
+            className="w-full"
           />
           <TextInput
             {...form.getInputProps('password')}
@@ -53,7 +60,11 @@ const Page = () => {
             withAsterisk
             mt="lg"
             width={400}
+            className="w-full"
           />
+          <Text mt="md" className="text-red-500">
+            {message}
+          </Text>
           <Button type="submit" mt="lg">
             Login
           </Button>

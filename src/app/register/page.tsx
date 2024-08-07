@@ -3,6 +3,7 @@
 import { Button, TextInput, Text, Center } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useState } from 'react'
+import { useAuth } from '~/hooks/useAuth'
 
 interface FormValues {
   email: string
@@ -13,6 +14,9 @@ interface FormValues {
 
 const Page = () => {
   const [password, setPassword] = useState<string>()
+  const [message, setMessage] = useState<string>()
+
+  const { register } = useAuth
 
   const form = useForm<FormValues>({
     mode: 'uncontrolled',
@@ -48,6 +52,11 @@ const Page = () => {
     }
   })
 
+  const handleSubmit = () => {
+    const res = register()
+    setMessage(res.message)
+  }
+
   return (
     <Center className="w-screen h-screen">
       <Center className=" p-8 flex flex-col gap-8">
@@ -56,7 +65,7 @@ const Page = () => {
         </Text>
         <form
           className="flex flex-col items-center w-[400px]"
-          onSubmit={form.onSubmit(() => console.log(1))}
+          onSubmit={form.onSubmit(() => handleSubmit())}
         >
           <TextInput
             {...form.getInputProps('email')}
@@ -99,6 +108,9 @@ const Page = () => {
             width={400}
             className="w-full"
           />
+          <Text mt="md" className="text-red-500">
+            {message}
+          </Text>
           <Button type="submit" mt="lg">
             Register
           </Button>
