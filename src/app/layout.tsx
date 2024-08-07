@@ -1,16 +1,23 @@
-import '@mantine/core/styles.css';
+import '@mantine/core/styles.css'
+import './globals.css'
 
-import { ColorSchemeScript, MantineProvider } from '@mantine/core';
+import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core'
 
 export const metadata = {
   title: 'My Mantine app',
-  description: 'I have followed setup instructions carefully',
-};
+  description: 'I have followed setup instructions carefully'
+}
+
+const theme = createTheme({
+  luminanceThreshold: 0.5,
+  autoContrast: true,
+  primaryColor: 'cyan'
+})
 
 export default function RootLayout({
-  children,
+  children
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <html lang="en">
@@ -18,8 +25,8 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider theme={theme}>{children}</MantineProvider>
       </body>
     </html>
-  );
+  )
 }

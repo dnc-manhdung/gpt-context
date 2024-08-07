@@ -1,7 +1,13 @@
-import { Button, Checkbox, Group, TextInput } from '@mantine/core'
-import { useForm } from '@mantine/form'
-import Demo from './components/demo'
+import { Button, Center } from '@mantine/core'
+import Link from 'next/link'
 
 export default function Page() {
-  return <Demo />
+  return (
+    <Center className="text-4xl h-screen flex flex-col gap-4">
+      Welcome to GPT-Context
+      <Button size="lg" component={Link} href="/login">
+        Start Now
+      </Button>
+    </Center>
+  )
 }
