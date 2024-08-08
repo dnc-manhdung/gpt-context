@@ -13,7 +13,7 @@ const Navbar: React.FC<NavbarProps> = ({ chatList }) => {
   return (
     <Flex direction="column" mt="md" ml="sm" mr="sm">
       <Text className="text-sm text-gray-600">Recent Chat</Text>
-      <Flex direction="column" className="w-[200px]" gap="8" mt="md">
+      <Flex direction="column" className="w-full" gap="8" mt="md">
         {chatList &&
           chatList.map((chat) => {
             return (
