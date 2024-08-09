@@ -53,7 +53,7 @@ const DefaultLayout: React.FC<LayoutProps> = ({ children }) => {
       <AppShell.Navbar>
         <Navbar chatList={chatList} />
       </AppShell.Navbar>
-      <AppShell.Main>{children}</AppShell.Main>
+      <AppShell.Main className="h-fit">{children}</AppShell.Main>
       <NewModal ref={newModalRef} />
     </AppShell>
   )
