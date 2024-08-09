@@ -1,12 +1,11 @@
+'use client'
+
 import '@mantine/core/styles.css'
 import './globals.css'
 
 import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core'
-
-export const metadata = {
-  title: 'My Mantine app',
-  description: 'I have followed setup instructions carefully'
-}
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const theme = createTheme({
   luminanceThreshold: 0.5,
@@ -19,13 +18,18 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const queryClient = new QueryClient()
+
   return (
     <html lang="en">
       <head>
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider theme={theme}>{children}</MantineProvider>
+        <QueryClientProvider client={queryClient}>
+          <MantineProvider theme={theme}>{children}</MantineProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
       </body>
     </html>
   )
