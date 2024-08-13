@@ -6,7 +6,7 @@ import DefaultLayout from '~/components/layouts/default'
 import { useConversation } from '~/hooks/useConversation'
 import { ConversationType } from '~/types/conversation'
 import { useQuery } from '@tanstack/react-query'
-import { Flex, Text } from '@mantine/core'
+import { Center, Flex, Loader } from '@mantine/core'
 import Conversation from '~/components/chat/conversation'
 import QuestionForm from '~/components/chat/question-form'
 
@@ -43,7 +43,9 @@ const Page = () => {
   return (
     <DefaultLayout>
       {isLoading ? (
-        <Text>Loading...........</Text>
+        <Center>
+          <Loader size={48} />
+        </Center>
       ) : conversationData ? (
         <Flex
           className="h-dvh -mt-[100px]"
