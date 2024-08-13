@@ -12,7 +12,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
         return (
           <div
             key={message.id}
-            className={`${message.type ? 'self-start bg-gray-600 text-white' : 'self-end bg-gray-100'} px-4 py-3 rounded-full max-w-[450px]`}
+            className={`${message.type ? 'self-start bg-gray-600 text-white' : 'self-end bg-gray-100'} px-5 py-3 rounded-full max-w-[450px]`}
           >
             {message.message}
           </div>

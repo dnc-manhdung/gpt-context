@@ -51,5 +51,21 @@ export const useConversation = {
         ]
       }
     }
+  },
+
+  sendQuestion: async (message: string) => {
+    setTimeout(() => {}, 5000)
+
+    if (message) {
+      return {
+        code: 1000,
+        message: '',
+        data: {
+          id: 1000,
+          message: 'hehe',
+          type: 1
+        }
+      }
+    }
   }
 }
