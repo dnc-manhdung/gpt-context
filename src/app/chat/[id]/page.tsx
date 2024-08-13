@@ -1,29 +1,23 @@
 'use client'
 
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import DefaultLayout from '~/components/layouts/default'
 import { useConversation } from '~/hooks/useConversation'
 import { ConversationType } from '~/types/conversation'
 import { useQuery } from '@tanstack/react-query'
-import { ActionIcon, Flex, Text, Textarea } from '@mantine/core'
+import { Flex, Text } from '@mantine/core'
 import Conversation from '~/components/chat/conversation'
-import { IconSend2 } from '@tabler/icons-react'
-import { useForm } from '@mantine/form'
 import QuestionForm from '~/components/chat/question-form'
-
-interface FormValues {
-  question: string
-}
 
 const Page = () => {
   const params = useParams()
   const { id } = params
-  const router = useRouter()
   const [conversationData, setConversationData] = useState<ConversationType>({
     messages: []
   })
   const [sequence, setSequence] = useState<number>(0)
+  const [isChatLoading, setIsChatLoading] = useState<boolean>(false)
 
   const { getConversation } = useConversation
 
@@ -40,6 +34,14 @@ const Page = () => {
     queryFn: fetchConversation
   })
 
+  const startChatLoading = () => {
+    setIsChatLoading(true)
+  }
+
+  const stopChatLoading = () => {
+    setIsChatLoading(false)
+  }
+
   return (
     <DefaultLayout>
       {isLoading ? (
@@ -51,12 +53,17 @@ const Page = () => {
           justify="flex-end"
           align="center"
         >
-          <Conversation conversation={conversationData}></Conversation>
+          <Conversation
+            conversation={conversationData}
+            isChatLoading={isChatLoading}
+          ></Conversation>
           <QuestionForm
             conversationData={conversationData}
             setConversationData={setConversationData}
             sequence={sequence}
             setSequence={setSequence}
+            startChatLoading={startChatLoading}
+            stopChatLoading={stopChatLoading}
           />
         </Flex>
       ) : (

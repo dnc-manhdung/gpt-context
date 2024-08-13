@@ -1,7 +1,7 @@
 import { ActionIcon, Flex, Textarea } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { IconSend2 } from '@tabler/icons-react'
-import { ConversationType } from '~/types/conversation'
+import { ConversationType, MessageType } from '~/types/conversation'
 import { useConversation } from '~/hooks/useConversation'
 import { useQuery } from '@tanstack/react-query'
 
@@ -14,30 +14,49 @@ interface QuestionFormProps {
   setConversationData: (conversation: ConversationType) => void
   sequence: number
   setSequence: (newSequence: number) => void
+  startChatLoading: () => void
+  stopChatLoading: () => void
 }
 
 const QuestionForm: React.FC<QuestionFormProps> = ({
   conversationData,
   setConversationData,
   sequence,
-  setSequence
+  setSequence,
+  startChatLoading,
+  stopChatLoading
 }) => {
   const { sendQuestion } = useConversation
 
   const form = useForm<FormValues>({
-    mode: 'uncontrolled',
     initialValues: {
       question: ''
     }
   })
 
   const fetchQuestion = async () => {
-    const data = await sendQuestion(form.getValues().question)
-
     const newMessage = {
       id: sequence + 1,
       type: 0,
       message: form.getValues().question
+    }
+
+    if (newMessage.message) {
+      startChatLoading()
+    }
+
+    if (newMessage.message) {
+      setConversationData({
+        ...conversationData,
+        messages: [...conversationData.messages, newMessage]
+      })
+    }
+
+    const data = await sendQuestion(form.getValues().question)
+    const ans = data.data as MessageType
+
+    if (newMessage.message) {
+      stopChatLoading()
     }
 
     setSequence(sequence + 2)
@@ -45,17 +64,13 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
     if (newMessage.message) {
       setConversationData({
         ...conversationData,
-        messages: [
-          ...conversationData.messages,
-          newMessage,
-          {
-            id: 1000,
-            message: 'hehe',
-            type: 1
-          }
-        ]
+        messages: [...conversationData.messages, newMessage, ans]
       })
     }
+
+    form.reset()
+
+    return conversationData || null
   }
 
   const { isLoading } = useQuery({
@@ -72,7 +87,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
       <Flex align="flex-end" gap={16}>
         <Textarea
           {...form.getInputProps('question')}
-          className="w-[500px]"
+          className="w-[640px]"
           label="Ask here"
           autosize
           maxRows={6}

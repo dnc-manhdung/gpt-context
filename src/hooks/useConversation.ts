@@ -54,7 +54,7 @@ export const useConversation = {
   },
 
   sendQuestion: async (message: string) => {
-    setTimeout(() => {}, 5000)
+    setTimeout(() => {}, 10000)
 
     if (message) {
       return {
@@ -62,10 +62,16 @@ export const useConversation = {
         message: '',
         data: {
           id: 1000,
-          message: 'hehe',
+          message: 'hehe1',
           type: 1
         }
       }
+    }
+
+    return {
+      code: 1000,
+      message: '',
+      data: null
     }
   }
 }
