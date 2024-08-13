@@ -3,9 +3,13 @@ import { ConversationType } from '~/types/conversation'
 
 interface ConversationProps {
   conversation: ConversationType
+  isChatLoading: boolean
 }
 
-const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
+const Conversation: React.FC<ConversationProps> = ({
+  conversation,
+  isChatLoading
+}) => {
   return (
     <Flex direction="column" className="w-full max-w-[700px] mb-6" gap={24}>
       {conversation.messages.map((message) => {
@@ -18,6 +22,9 @@ const Conversation: React.FC<ConversationProps> = ({ conversation }) => {
           </div>
         )
       })}
+      {isChatLoading && (
+        <span className="mx-auto text-gray-400">Wait a minute...</span>
+      )}
     </Flex>
   )
 }
