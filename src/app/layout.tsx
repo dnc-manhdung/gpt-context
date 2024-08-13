@@ -6,6 +6,8 @@ import './globals.css'
 import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { Provider } from 'react-redux'
+import { store } from '~/store/store'
 
 const theme = createTheme({
   luminanceThreshold: 0.5,
@@ -26,10 +28,12 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body>
-        <QueryClientProvider client={queryClient}>
-          <MantineProvider theme={theme}>{children}</MantineProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
+        <Provider store={store}>
+          <QueryClientProvider client={queryClient}>
+            <MantineProvider theme={theme}>{children}</MantineProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
+        </Provider>
       </body>
     </html>
   )
