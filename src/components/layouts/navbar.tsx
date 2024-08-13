@@ -1,5 +1,6 @@
 import { Flex, Text, Button } from '@mantine/core'
 import { useParams } from 'next/navigation'
+import SelectConversation from './select-conversation'
 
 type Chat = {
   id: string
@@ -20,22 +21,13 @@ const Navbar: React.FC<NavbarProps> = ({ chatList }) => {
       <Flex direction="column" className="w-full" gap="8" mt="md">
         {chatList &&
           chatList.map((chat) => {
-            return chat.id === id ? (
-              <Text
+            return (
+              <SelectConversation
+                isSelected={chat.id === id}
                 key={chat.id}
-                className="text-md px-1 py-1.5 bg-gray-200 rounded-md"
-              >
-                {chat.name}
-              </Text>
-            ) : (
-              <Text
-                key={chat.id}
-                component="a"
-                className="text-md hover:bg-gray-100 px-1 py-1.5 rounded-md"
-                href={`/chat/${chat.id}`}
-              >
-                {chat.name}
-              </Text>
+                id={chat.id}
+                name={chat.name}
+              />
             )
           })}
       </Flex>
