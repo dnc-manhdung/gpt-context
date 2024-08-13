@@ -61,7 +61,7 @@ export const useConversation = {
         code: 1000,
         message: '',
         data: {
-          id: 1000,
+          id: Date.now() + 1,
           message: 'hehe1',
           type: 1
         }

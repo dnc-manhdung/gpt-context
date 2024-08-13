@@ -16,7 +16,6 @@ const Page = () => {
   const [conversationData, setConversationData] = useState<ConversationType>({
     messages: []
   })
-  const [sequence, setSequence] = useState<number>(0)
   const [isChatLoading, setIsChatLoading] = useState<boolean>(false)
 
   const { getConversation } = useConversation
@@ -24,7 +23,6 @@ const Page = () => {
   const fetchConversation = async () => {
     const data = await getConversation(id)
     setConversationData(data.data)
-    setSequence(data.data.messages.slice(-1)[0].id)
     console.log(1)
     return data
   }
@@ -60,8 +58,6 @@ const Page = () => {
           <QuestionForm
             conversationData={conversationData}
             setConversationData={setConversationData}
-            sequence={sequence}
-            setSequence={setSequence}
             startChatLoading={startChatLoading}
             stopChatLoading={stopChatLoading}
           />

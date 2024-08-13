@@ -12,8 +12,6 @@ interface FormValues {
 interface QuestionFormProps {
   conversationData: ConversationType
   setConversationData: (conversation: ConversationType) => void
-  sequence: number
-  setSequence: (newSequence: number) => void
   startChatLoading: () => void
   stopChatLoading: () => void
 }
@@ -21,8 +19,6 @@ interface QuestionFormProps {
 const QuestionForm: React.FC<QuestionFormProps> = ({
   conversationData,
   setConversationData,
-  sequence,
-  setSequence,
   startChatLoading,
   stopChatLoading
 }) => {
@@ -36,7 +32,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
 
   const fetchQuestion = async () => {
     const newMessage = {
-      id: sequence + 1,
+      id: Date.now(),
       type: 0,
       message: form.getValues().question
     }
@@ -58,8 +54,6 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
     if (newMessage.message) {
       stopChatLoading()
     }
-
-    setSequence(sequence + 2)
 
     if (newMessage.message) {
       setConversationData({
