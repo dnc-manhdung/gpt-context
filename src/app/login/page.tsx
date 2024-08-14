@@ -3,7 +3,9 @@
 import { Button, Center, TextInput, Text } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { useAuth } from '~/hooks/useAuth'
+import { setToken } from '~/store/slices/authSlice'
 
 interface FormValues {
   username: string
@@ -12,6 +14,7 @@ interface FormValues {
 
 const Page = () => {
   const [message, setMessage] = useState<string>()
+  const dispatch = useDispatch()
 
   const { login } = useAuth
 
@@ -27,9 +30,9 @@ const Page = () => {
     }
   })
 
-  const handleSubmit = () => {
-    const res = login()
-    setMessage(res.message)
+  const handleSubmit = async () => {
+    const res = await login(form.getValues())
+    dispatch(setToken(res.access_token))
   }
 
   return (
@@ -61,6 +64,7 @@ const Page = () => {
             mt="lg"
             width={400}
             className="w-full"
+            type="password"
           />
           <Text mt="md" className="text-red-500">
             {message}
@@ -68,14 +72,6 @@ const Page = () => {
           <Button type="submit" mt="lg">
             Login
           </Button>
-          <Text
-            component="a"
-            href="/register"
-            mt="lg"
-            className="text-cyan-500 font-bold"
-          >
-            Do not have any account?
-          </Text>
         </form>
       </Center>
     </Center>

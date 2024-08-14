@@ -1,3 +1,10 @@
+import { fetchData } from './fetch'
+
+interface LoginFormValues {
+  username: string
+  password: string
+}
+
 export const useAuth = {
   register: () => {
     return {
@@ -7,11 +14,7 @@ export const useAuth = {
     }
   },
 
-  login: () => {
-    return {
-      code: 1005,
-      message: 'Wrong password!',
-      data: null
-    }
+  login: async (formData: LoginFormValues) => {
+    return fetchData('/auth/login', formData, 'POST')
   }
 }
