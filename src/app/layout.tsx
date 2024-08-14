@@ -7,7 +7,8 @@ import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { Provider } from 'react-redux'
-import { store } from '~/store/store'
+import { store, persistor } from '~/store/store'
+import { PersistGate } from 'redux-persist/integration/react'
 
 const theme = createTheme({
   luminanceThreshold: 0.5,
@@ -29,10 +30,12 @@ export default function RootLayout({
       </head>
       <body>
         <Provider store={store}>
-          <QueryClientProvider client={queryClient}>
-            <MantineProvider theme={theme}>{children}</MantineProvider>
-            <ReactQueryDevtools initialIsOpen={false} />
-          </QueryClientProvider>
+          <PersistGate loading={null} persistor={persistor}>
+            <QueryClientProvider client={queryClient}>
+              <MantineProvider theme={theme}>{children}</MantineProvider>
+              <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
+          </PersistGate>
         </Provider>
       </body>
     </html>

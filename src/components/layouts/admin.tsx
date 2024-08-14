@@ -18,8 +18,7 @@ const AdminLayout: React.FC<LayoutProps> = ({ children }) => {
   const accessToken = useSelector((state: RootState) => state.auth.access_token)
 
   const layout = {
-    header: { height: 80 },
-    navbar: { width: 300, breakpoint: 'sm' }
+    header: { height: 80 }
   }
 
   const handleLogout = () => {

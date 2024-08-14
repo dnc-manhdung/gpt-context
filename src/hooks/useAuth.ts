@@ -15,6 +15,6 @@ export const useAuth = {
   },
 
   login: async (formData: LoginFormValues) => {
-    return fetchData('/auth/login', formData, 'POST')
+    return fetchData('/auth/login', '', formData, 'POST')
   }
 }

@@ -1,13 +1,25 @@
 export const fetchData = async (
   path: string,
-  data: any = null,
+  token: string = '',
+  data: object | null,
   method: string = 'GET'
 ) => {
+  let headers: HeadersInit = {
+    'Content-Type': 'application/json'
+  }
+
+  if (token) {
+    headers = {
+      ...headers,
+      Authorization: `Bearer ${token}`
+    }
+  }
+
+  console.log(headers)
+
   const config: RequestInit = {
     method,
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers: headers,
     body: data ? JSON.stringify(data) : undefined
   }
 
