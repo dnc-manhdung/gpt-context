@@ -2,6 +2,7 @@
 
 import { Button, Center, TextInput, Text } from '@mantine/core'
 import { useForm } from '@mantine/form'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useAuth } from '~/hooks/useAuth'
@@ -15,6 +16,7 @@ interface FormValues {
 const Page = () => {
   const [message, setMessage] = useState<string>()
   const dispatch = useDispatch()
+  const router = useRouter()
 
   const { login } = useAuth
 
@@ -32,7 +34,17 @@ const Page = () => {
 
   const handleSubmit = async () => {
     const res = await login(form.getValues())
-    dispatch(setToken(res.access_token))
+
+    if (res.message) {
+      setMessage(res.message)
+    } else {
+      dispatch(setToken(res.access_token))
+      if (res.role === 'user') {
+        router.push('/chat')
+      } else {
+        router.push('/manage')
+      }
+    }
   }
 
   return (
