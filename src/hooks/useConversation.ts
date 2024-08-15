@@ -1,3 +1,9 @@
+import { fetchData } from './fetch'
+
+interface NewConversationFormValues {
+  title: string
+}
+
 export const useConversation = {
   getConversation: async (id: string | string[]) => {
     setTimeout(() => {}, 5000)
@@ -73,5 +79,12 @@ export const useConversation = {
       message: '',
       data: null
     }
+  },
+
+  createConversation: async (
+    token: string,
+    formData: NewConversationFormValues
+  ) => {
+    return await fetchData('/thread/create', token, formData, 'POST')
   }
 }
