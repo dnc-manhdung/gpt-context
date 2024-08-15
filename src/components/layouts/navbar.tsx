@@ -1,32 +1,32 @@
-import { Flex, Text, Button } from '@mantine/core'
+'use client'
+
+import { Flex, Text } from '@mantine/core'
 import { useParams } from 'next/navigation'
 import SelectConversation from './select-conversation'
-
-type Chat = {
-  id: string
-  name: string
-}
+import { ThreadType } from '~/types/conversation'
 
 interface NavbarProps {
-  chatList: Chat[]
+  conversations: ThreadType[] | undefined
 }
 
-const Navbar: React.FC<NavbarProps> = ({ chatList }) => {
+const Navbar: React.FC<NavbarProps> = ({ conversations }) => {
   const params = useParams()
   const { id } = params
+
+  console.log(conversations)
 
   return (
     <Flex direction="column" mt="md" ml="sm" mr="sm">
       <Text className="text-sm text-gray-600">Recent Chat</Text>
       <Flex direction="column" className="w-full" gap="8" mt="md">
-        {chatList &&
-          chatList.map((chat) => {
+        {conversations &&
+          conversations.map((conversation) => {
             return (
               <SelectConversation
-                isSelected={chat.id === id}
-                key={chat.id}
-                id={chat.id}
-                name={chat.name}
+                isSelected={conversation.id === Number(id)}
+                key={conversation.id}
+                id={conversation.id}
+                title={conversation.title}
               />
             )
           })}

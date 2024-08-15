@@ -86,5 +86,9 @@ export const useConversation = {
     formData: NewConversationFormValues
   ) => {
     return await fetchData('/thread/create', token, formData, 'POST')
+  },
+
+  getConversations: async (token: string) => {
+    return await fetchData('/thread/findOwnThreads', token, null, 'GET')
   }
 }
