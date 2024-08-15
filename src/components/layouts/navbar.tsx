@@ -7,18 +7,17 @@ import { ThreadType } from '~/types/conversation'
 
 interface NavbarProps {
   conversations: ThreadType[] | undefined
+  refetch: () => void
 }
 
-const Navbar: React.FC<NavbarProps> = ({ conversations }) => {
+const Navbar: React.FC<NavbarProps> = ({ conversations, refetch }) => {
   const params = useParams()
   const { id } = params
-
-  console.log(conversations)
 
   return (
     <Flex direction="column" mt="md" ml="sm" mr="sm">
       <Text className="text-sm text-gray-600">Recent Chat</Text>
-      <Flex direction="column" className="w-full" gap="8" mt="md">
+      <Flex direction="column-reverse" className="w-full" gap="8" mt="md">
         {conversations &&
           conversations.map((conversation) => {
             return (
@@ -27,6 +26,8 @@ const Navbar: React.FC<NavbarProps> = ({ conversations }) => {
                 key={conversation.id}
                 id={conversation.id}
                 title={conversation.title}
+                context={conversation.context}
+                refetchConversation={refetch}
               />
             )
           })}

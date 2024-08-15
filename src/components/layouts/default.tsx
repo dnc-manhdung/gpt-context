@@ -81,7 +81,11 @@ const DefaultLayout: React.FC<LayoutProps> = ({ children }) => {
         </Flex>
       </AppShell.Header>
       <AppShell.Navbar>
-        {isLoading ? <Loader /> : <Navbar conversations={conversations} />}
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <Navbar conversations={conversations} refetch={refetch} />
+        )}
       </AppShell.Navbar>
       <AppShell.Main className="h-fit">{children}</AppShell.Main>
       <NewModal ref={newModalRef} />
