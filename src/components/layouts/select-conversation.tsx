@@ -1,10 +1,14 @@
 import { useState } from 'react'
-import { ActionIcon, Container, Text, TextInput } from '@mantine/core'
+import { ActionIcon, Button, Container, Text, TextInput } from '@mantine/core'
 import { IconDots } from '@tabler/icons-react'
 import ConversationOptions from './conversation-options'
 import { useForm } from '@mantine/form'
 import { useDisclosure } from '@mantine/hooks'
 import ContextModal from '../chat/context-modal'
+import { useSelector } from 'react-redux'
+import { RootState } from '~/store'
+import { useConversation } from '~/hooks/useConversation'
+import { useMutation } from '@tanstack/react-query'
 
 interface SelectConversationProps {
   id: number
@@ -27,10 +31,16 @@ const SelectConversation: React.FC<SelectConversationProps> = ({
 }) => {
   const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false)
   const [isChangingTitle, setIsChangingTitle] = useState<boolean>(false)
+  const accessToken = useSelector((state: RootState) => state.auth.access_token)
+
+  const { updateTitle } = useConversation
 
   const form = useForm<FormValues>({
     initialValues: {
       title
+    },
+    validate: {
+      title: (value) => (!value ? 'Title cannot be blank' : null)
     }
   })
 
@@ -55,8 +65,25 @@ const SelectConversation: React.FC<SelectConversationProps> = ({
     setIsChangingTitle(true)
   }
 
-  const handleChangeName = () => {
-    console.log(form.getValues().title)
+  const handleChangeName = async () => {
+    if (!accessToken) {
+      throw new Error('Access token is required')
+    }
+
+    const res = await updateTitle(accessToken, id, form.getValues())
+
+    if (res) {
+      refetchConversation()
+      setIsChangingTitle(false)
+    }
+  }
+
+  const mutation = useMutation({
+    mutationFn: () => handleChangeName()
+  })
+
+  const handleCancel = () => {
+    form.reset()
     setIsChangingTitle(false)
   }
 
@@ -68,8 +95,21 @@ const SelectConversation: React.FC<SelectConversationProps> = ({
       } rounded-md relative group`}
     >
       {isChangingTitle ? (
-        <form onSubmit={form.onSubmit(() => handleChangeName())}>
-          <TextInput {...form.getInputProps('title')} />
+        <form
+          onSubmit={form.onSubmit(() => mutation.mutate())}
+          className="relative"
+        >
+          <TextInput
+            {...form.getInputProps('title')}
+            disabled={mutation.status === 'pending'}
+          />
+          <Button
+            size="compact-xs"
+            className="mt-2 absolute right-1 top-0"
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
         </form>
       ) : (
         <Text

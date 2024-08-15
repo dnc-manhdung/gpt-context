@@ -9,6 +9,10 @@ interface AddContextFormValues {
   context: string
 }
 
+interface UpdateConversationFormValues {
+  title: string
+}
+
 export const useConversation = {
   getConversation: async (id: string | string[]) => {
     setTimeout(() => {}, 5000)
@@ -103,5 +107,13 @@ export const useConversation = {
     formData: AddContextFormValues
   ) => {
     return await fetchData(`/thread/addContext/${id}`, token, formData, 'POST')
+  },
+
+  updateTitle: async (
+    token: string,
+    id: number,
+    formData: UpdateConversationFormValues
+  ) => {
+    return await fetchData(`/thread/update/${id}`, token, formData, 'PATCH')
   }
 }
