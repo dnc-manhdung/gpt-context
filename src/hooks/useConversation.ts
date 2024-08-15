@@ -12,6 +12,10 @@ interface UpdateConversationFormValues {
   title: string
 }
 
+interface SendMessageFormValues {
+  content: string
+}
+
 export const useConversation = {
   getConversation: async (token: string, id: number) => {
     return await fetchData(`/message/get/${id}`, token, null, 'GET')
@@ -37,6 +41,14 @@ export const useConversation = {
       message: '',
       data: null
     }
+  },
+
+  sendMessage: async (
+    token: string,
+    id: number,
+    formData: SendMessageFormValues
+  ) => {
+    return await fetchData(`/message/send/${id}`, token, formData, 'POST')
   },
 
   createConversation: async (

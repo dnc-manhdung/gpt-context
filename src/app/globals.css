@@ -30,3 +30,12 @@
 * {
   font-family: 'Google Sans';
 }
+
+.conversation::-webkit-scrollbar {
+  display: none;
+}
+
+.conversation {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

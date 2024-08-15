@@ -15,8 +15,6 @@ export const fetchData = async (
     }
   }
 
-  console.log(headers)
-
   const config: RequestInit = {
     method,
     headers: headers,

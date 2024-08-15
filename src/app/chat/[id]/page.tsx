@@ -15,10 +15,7 @@ import { RootState } from '~/store'
 const Page = () => {
   const params = useParams()
   const { id } = params
-  const [conversationData, setConversationData] = useState<ConversationType>({
-    messages: []
-  })
-  const [isChatLoading, setIsChatLoading] = useState<boolean>(false)
+  const [pendingMessage, setPendingMessage] = useState<string>('')
   const accessToken = useSelector((state: RootState) => state.auth.access_token)
 
   const { getConversation } = useConversation
@@ -41,21 +38,13 @@ const Page = () => {
     queryFn: fetchConversation
   })
 
-  const startChatLoading = () => {
-    setIsChatLoading(true)
-  }
-
-  const stopChatLoading = () => {
-    setIsChatLoading(false)
-  }
-
   return (
     <DefaultLayout>
       {isLoading ? (
         <Center>
           <Loader size={48} />
         </Center>
-      ) : conversationData ? (
+      ) : messages ? (
         <Flex
           className="h-dvh -mt-[100px]"
           direction="column"
@@ -64,13 +53,12 @@ const Page = () => {
         >
           <Conversation
             messages={messages}
-            isChatLoading={isChatLoading}
+            pendingMessage={pendingMessage}
           ></Conversation>
           <QuestionForm
-            conversationData={conversationData}
-            setConversationData={setConversationData}
-            startChatLoading={startChatLoading}
-            stopChatLoading={stopChatLoading}
+            id={Number(id)}
+            refetchConversation={refetch}
+            setPendingMessage={setPendingMessage}
           />
         </Flex>
       ) : (
