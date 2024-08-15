@@ -1,7 +1,12 @@
+import { threadId } from 'worker_threads'
 import { fetchData } from './fetch'
 
 interface NewConversationFormValues {
   title: string
+}
+
+interface AddContextFormValues {
+  context: string
 }
 
 export const useConversation = {
@@ -90,5 +95,13 @@ export const useConversation = {
 
   getConversations: async (token: string) => {
     return await fetchData('/thread/findOwnThreads', token, null, 'GET')
+  },
+
+  addContext: async (
+    token: string,
+    id: number,
+    formData: AddContextFormValues
+  ) => {
+    return await fetchData(`/thread/addContext/${id}`, token, formData, 'POST')
   }
 }

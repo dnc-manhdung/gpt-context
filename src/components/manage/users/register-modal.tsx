@@ -5,7 +5,7 @@ import { useForm } from '@mantine/form'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { UserRole } from '~/app/constants/role'
+import { UserRole } from '~/constants/role'
 import { useUsers } from '~/hooks/useUsers'
 import { RootState } from '~/store'
 
