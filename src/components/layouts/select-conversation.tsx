@@ -5,26 +5,26 @@ import ConversationOptions from './conversation-options'
 import { useForm } from '@mantine/form'
 
 interface SelectConversationProps {
-  id: string
-  name: string
+  id: number
+  title: string
   isSelected: boolean
 }
 
 interface FormValues {
-  conversationName: string
+  title: string
 }
 
 const SelectConversation: React.FC<SelectConversationProps> = ({
   id,
-  name,
+  title,
   isSelected
 }) => {
   const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false)
-  const [isChangingName, setIsChangingName] = useState<boolean>(false)
+  const [isChangingTitle, setIsChangingTitle] = useState<boolean>(false)
 
   const form = useForm<FormValues>({
     initialValues: {
-      conversationName: name
+      title
     }
   })
 
@@ -44,12 +44,12 @@ const SelectConversation: React.FC<SelectConversationProps> = ({
 
   const openChangeName = () => {
     toggleOptions()
-    setIsChangingName(true)
+    setIsChangingTitle(true)
   }
 
   const handleChangeName = () => {
-    console.log(form.getValues().conversationName)
-    setIsChangingName(false)
+    console.log(form.getValues().title)
+    setIsChangingTitle(false)
   }
 
   return (
@@ -59,9 +59,9 @@ const SelectConversation: React.FC<SelectConversationProps> = ({
         isSelected ? 'bg-gray-200' : 'hover:bg-gray-100'
       } rounded-md relative group`}
     >
-      {isChangingName ? (
+      {isChangingTitle ? (
         <form onSubmit={form.onSubmit(() => handleChangeName())}>
-          <TextInput {...form.getInputProps('conversationName')} />
+          <TextInput {...form.getInputProps('title')} />
         </form>
       ) : (
         <Text
@@ -69,12 +69,12 @@ const SelectConversation: React.FC<SelectConversationProps> = ({
           href={`/chat/${id}`}
           className="block w-full h-full"
         >
-          {name}
+          {title}
         </Text>
       )}
       <ActionIcon
         color="transparent"
-        className={`${isChangingName && 'hidden'} absolute right-0 top-1 rounded-full hover:bg-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200`}
+        className={`${isChangingTitle && 'hidden'} absolute right-0 top-1 rounded-full hover:bg-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200`}
         onClick={handleIconClickWithEvent}
       >
         <IconDots color="black" size={16} />

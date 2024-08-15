@@ -1,6 +1,6 @@
 'use client'
 
-import { ActionIcon, AppShell, Flex, Text } from '@mantine/core'
+import { ActionIcon, AppShell, Flex, Loader, Text } from '@mantine/core'
 import { IconPencilPlus, IconLogout } from '@tabler/icons-react'
 import Navbar from './navbar'
 import { useEffect, useRef } from 'react'
@@ -9,6 +9,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/navigation'
 import { RootState } from '~/store'
 import { clearToken } from '~/store/slices/authSlice'
+import { useConversation } from '~/hooks/useConversation'
+import { useQuery } from '@tanstack/react-query'
+import { ThreadType } from '~/types/conversation'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -20,25 +23,34 @@ const DefaultLayout: React.FC<LayoutProps> = ({ children }) => {
   const accessToken = useSelector((state: RootState) => state.auth.access_token)
   const newModalRef = useRef<{ open: () => void }>(null)
 
+  const { getConversations } = useConversation
+
   const handleOpenModal = () => {
     newModalRef.current?.open()
   }
+
+  const fetchConversations = async () => {
+    if (!accessToken) {
+      throw new Error('Access token is required')
+    }
+
+    const res = await getConversations(accessToken)
+    return res
+  }
+
+  const {
+    data: conversations,
+    isLoading,
+    refetch
+  } = useQuery<ThreadType[]>({
+    queryKey: ['conversations'],
+    queryFn: fetchConversations
+  })
 
   const layout = {
     header: { height: 80 },
     navbar: { width: 300, breakpoint: 'sm' }
   }
-
-  const chatList = [
-    {
-      id: 'abcd',
-      name: 'Chat 1'
-    },
-    {
-      id: 'dbca',
-      name: 'Chat 2'
-    }
-  ]
 
   const handleLogout = () => {
     dispatch(clearToken())
@@ -69,7 +81,7 @@ const DefaultLayout: React.FC<LayoutProps> = ({ children }) => {
         </Flex>
       </AppShell.Header>
       <AppShell.Navbar>
-        <Navbar chatList={chatList} />
+        {isLoading ? <Loader /> : <Navbar conversations={conversations} />}
       </AppShell.Navbar>
       <AppShell.Main className="h-fit">{children}</AppShell.Main>
       <NewModal ref={newModalRef} />
