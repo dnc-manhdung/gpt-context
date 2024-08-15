@@ -1,9 +1,22 @@
 import { UserType } from './user'
 
+type MessageThread = {
+  id: number
+  created_at: Date
+  updated_at: Date
+  deleted_at: Date | null
+  title: string
+  context?: string
+}
+
 export type MessageType = {
   id: number
-  type: number
-  message: string
+  created_at: Date
+  update_at: Date
+  delete_at: Date | null
+  content: string
+  replyTo: MessageThread | null
+  thread: MessageThread
 }
 
 export type ConversationType = {
@@ -17,5 +30,5 @@ export type ThreadType = {
   id: number
   created_at: Date
   updated_at: Date
-  deleted_at: Date
+  deleted_at: Date | null
 }

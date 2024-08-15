@@ -4,11 +4,13 @@ import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import DefaultLayout from '~/components/layouts/default'
 import { useConversation } from '~/hooks/useConversation'
-import { ConversationType } from '~/types/conversation'
+import { ConversationType, MessageType } from '~/types/conversation'
 import { useQuery } from '@tanstack/react-query'
 import { Center, Flex, Loader } from '@mantine/core'
 import Conversation from '~/components/chat/conversation'
 import QuestionForm from '~/components/chat/question-form'
+import { useSelector } from 'react-redux'
+import { RootState } from '~/store'
 
 const Page = () => {
   const params = useParams()
@@ -17,17 +19,24 @@ const Page = () => {
     messages: []
   })
   const [isChatLoading, setIsChatLoading] = useState<boolean>(false)
+  const accessToken = useSelector((state: RootState) => state.auth.access_token)
 
   const { getConversation } = useConversation
 
-  const fetchConversation = async () => {
-    const data = await getConversation(id)
-    setConversationData(data.data)
-    console.log(1)
-    return data
+  const fetchConversation = async (): Promise<MessageType[]> => {
+    if (!accessToken) {
+      throw new Error('Access token is required')
+    }
+
+    return await getConversation(accessToken, Number(id))
   }
 
-  const { data, error, isLoading, refetch } = useQuery({
+  const {
+    data: messages,
+    error,
+    isLoading,
+    refetch
+  } = useQuery<MessageType[]>({
     queryKey: ['conversation'],
     queryFn: fetchConversation
   })
@@ -54,7 +63,7 @@ const Page = () => {
           align="center"
         >
           <Conversation
-            conversation={conversationData}
+            messages={messages}
             isChatLoading={isChatLoading}
           ></Conversation>
           <QuestionForm

@@ -1,41 +1,42 @@
 import { ActionIcon, Flex } from '@mantine/core'
 import { IconDots } from '@tabler/icons-react'
-import { ConversationType } from '~/types/conversation'
+import { MessageType } from '~/types/conversation'
 
 interface ConversationProps {
-  conversation: ConversationType
+  messages: MessageType[] | undefined
   isChatLoading: boolean
 }
 
 const Conversation: React.FC<ConversationProps> = ({
-  conversation,
+  messages,
   isChatLoading
 }) => {
   return (
     <Flex direction="column" className="w-full max-w-[700px] mb-6" gap={24}>
-      {conversation.messages.map((message) => {
-        return (
-          <Flex
-            key={message.id}
-            className={`${message.type ? 'self-start' : 'self-end'} group`}
-            direction={message.type ? 'row' : 'row-reverse'}
-            align="center"
-            gap={4}
-          >
-            <div
-              className={`${message.type ? 'bg-gray-600 text-white' : 'bg-gray-100'} px-5 py-3 rounded-3xl max-w-[450px]`}
+      {messages &&
+        messages.map((message) => {
+          return (
+            <Flex
+              key={message.id}
+              className={`${message.replyTo ? 'self-start' : 'self-end'} group`}
+              direction={message.replyTo ? 'row' : 'row-reverse'}
+              align="center"
+              gap={4}
             >
-              {message.message}
-            </div>
-            <ActionIcon
-              color="white"
-              className="hover:bg-transparent opacity-0 group-hover:opacity-100"
-            >
-              <IconDots size={16} className="text-gray-500" />
-            </ActionIcon>
-          </Flex>
-        )
-      })}
+              <div
+                className={`${message.replyTo ? 'bg-gray-600 text-white' : 'bg-gray-100'} px-5 py-3 rounded-3xl max-w-[450px]`}
+              >
+                {message.content}
+              </div>
+              <ActionIcon
+                color="white"
+                className="hover:bg-transparent opacity-0 group-hover:opacity-100"
+              >
+                <IconDots size={16} className="text-gray-500" />
+              </ActionIcon>
+            </Flex>
+          )
+        })}
       {isChatLoading && (
         <span className="mx-auto text-gray-400">Wait a minute...</span>
       )}
