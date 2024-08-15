@@ -41,26 +41,26 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
       startChatLoading()
     }
 
-    if (newMessage.message) {
-      setConversationData({
-        ...conversationData,
-        messages: [...conversationData.messages, newMessage]
-      })
-    }
+    // if (newMessage.message) {
+    //   setConversationData({
+    //     ...conversationData,
+    //     messages: [...conversationData.messages, newMessage]
+    //   })
+    // }
 
-    const data = await sendQuestion(form.getValues().question)
-    const ans = data.data as MessageType
+    // const data = await sendQuestion(form.getValues().question)
+    // const ans = data.data as MessageType
 
-    if (newMessage.message) {
-      stopChatLoading()
-    }
+    // if (newMessage.message) {
+    //   stopChatLoading()
+    // }
 
-    if (newMessage.message) {
-      setConversationData({
-        ...conversationData,
-        messages: [...conversationData.messages, newMessage, ans]
-      })
-    }
+    // if (newMessage.message) {
+    //   setConversationData({
+    //     ...conversationData,
+    //     messages: [...conversationData.messages, newMessage, ans]
+    //   })
+    // }
 
     form.reset()
 
