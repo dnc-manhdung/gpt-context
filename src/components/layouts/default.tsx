@@ -3,14 +3,21 @@
 import { ActionIcon, AppShell, Flex, Text } from '@mantine/core'
 import { IconPencilPlus, IconLogout } from '@tabler/icons-react'
 import Navbar from './navbar'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import NewModal from '../chat/new-modal'
+import { useDispatch, useSelector } from 'react-redux'
+import { useRouter } from 'next/navigation'
+import { RootState } from '~/store'
+import { clearToken } from '~/store/slices/authSlice'
 
 interface LayoutProps {
   children: React.ReactNode
 }
 
 const DefaultLayout: React.FC<LayoutProps> = ({ children }) => {
+  const dispatch = useDispatch()
+  const router = useRouter()
+  const accessToken = useSelector((state: RootState) => state.auth.access_token)
   const newModalRef = useRef<{ open: () => void }>(null)
 
   const handleOpenModal = () => {
@@ -33,6 +40,17 @@ const DefaultLayout: React.FC<LayoutProps> = ({ children }) => {
     }
   ]
 
+  const handleLogout = () => {
+    dispatch(clearToken())
+    router.push('/')
+  }
+
+  useEffect(() => {
+    if (!accessToken) {
+      router.push('/login')
+    }
+  }, [accessToken, router])
+
   return (
     <AppShell {...layout}>
       <AppShell.Header>
@@ -45,7 +63,7 @@ const DefaultLayout: React.FC<LayoutProps> = ({ children }) => {
               <IconPencilPlus />
             </ActionIcon>
           </Flex>
-          <ActionIcon size="40">
+          <ActionIcon size="40" onClick={handleLogout}>
             <IconLogout />
           </ActionIcon>
         </Flex>
