@@ -9,10 +9,10 @@ interface RegisterFormValues {
 
 export const useUsers = {
   getUsers: async (token: string) => {
-    return fetchData('/user', token, null)
+    return await fetchData('/user', token, null)
   },
 
   createUser: async (token: string, formData: RegisterFormValues) => {
-    return fetchData('/user/register', token, formData, 'POST')
+    return await fetchData('/user/register', token, formData, 'POST')
   }
 }

@@ -6,13 +6,21 @@ import { Button, Flex, Modal, TextInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { forwardRef, useImperativeHandle } from 'react'
 import { useRouter } from 'next/navigation'
+import { useConversation } from '~/hooks/useConversation'
+import { RootState } from '~/store'
+import { stat } from 'fs'
+import { useSelector } from 'react-redux'
+import { useMutation } from '@tanstack/react-query'
 
 interface FormValues {
   title: string
-  context: string
 }
 
 const NewModal = forwardRef((_, ref) => {
+  const { createConversation } = useConversation
+  const accessToken =
+    useSelector((state: RootState) => state.auth.access_token) || ''
+
   const [opened, { open, close }] = useDisclosure(false)
 
   const router = useRouter()
@@ -24,19 +32,22 @@ const NewModal = forwardRef((_, ref) => {
   const form = useForm<FormValues>({
     mode: 'uncontrolled',
     initialValues: {
-      title: '',
-      context: ''
+      title: ''
     },
     validate: {
-      title: (value) => (value ? null : 'Title cannot be blank'),
-      context: (value) => (value ? null : 'Context cannot be blank')
+      title: (value) => (value ? null : 'Title cannot be blank')
     }
   })
 
-  const handleCreate = () => {
-    console.log(form.getValues())
-    router.push('/chat/1')
+  const handleSubmit = async () => {
+    const res = await createConversation(accessToken, form.getValues())
+
+    router.push(`/chat/${res.id}`)
   }
+
+  const mutation = useMutation({
+    mutationFn: () => handleSubmit()
+  })
 
   return (
     <Modal
@@ -45,7 +56,7 @@ const NewModal = forwardRef((_, ref) => {
       title="Create a new conversation"
       centered
     >
-      <form onSubmit={form.onSubmit(() => handleCreate())}>
+      <form onSubmit={form.onSubmit(() => mutation.mutate())}>
         <Flex direction="column" gap={8}>
           <TextInput
             {...form.getInputProps('title')}
@@ -54,16 +65,14 @@ const NewModal = forwardRef((_, ref) => {
             placeholder="Title"
             size="lg"
             className="w-full"
+            disabled={mutation.status === 'pending'}
           />
-          <TextInput
-            {...form.getInputProps('context')}
-            key={form.key('context')}
-            label="Context"
-            placeholder="Context"
-            size="lg"
-            className="w-full"
-          />
-          <Button type="submit" mt="lg">
+          <Button
+            type="submit"
+            mt="lg"
+            className="w-1/2 mx-auto"
+            loading={mutation.status === 'pending'}
+          >
             Create new conversation
           </Button>
         </Flex>
