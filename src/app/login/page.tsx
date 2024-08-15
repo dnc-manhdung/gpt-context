@@ -2,6 +2,7 @@
 
 import { Button, Center, TextInput, Text } from '@mantine/core'
 import { useForm } from '@mantine/form'
+import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
@@ -47,6 +48,10 @@ const Page = () => {
     }
   }
 
+  const mutation = useMutation({
+    mutationFn: () => handleSubmit()
+  })
+
   return (
     <Center className="w-screen h-screen">
       <Center className="p-8 flex flex-col gap-4">
@@ -54,7 +59,7 @@ const Page = () => {
           Login
         </Text>
         <form
-          onSubmit={form.onSubmit(() => handleSubmit())}
+          onSubmit={form.onSubmit(() => mutation.mutate())}
           className="flex flex-col items-center w-[300px]"
         >
           <TextInput
@@ -63,8 +68,8 @@ const Page = () => {
             label="Username"
             placeholder="Username"
             size="lg"
-            withAsterisk
             className="w-full"
+            disabled={mutation.status === 'pending'}
           />
           <TextInput
             {...form.getInputProps('password')}
@@ -72,16 +77,16 @@ const Page = () => {
             label="Password"
             placeholder="Password"
             size="lg"
-            withAsterisk
             mt="lg"
             width={400}
             className="w-full"
             type="password"
+            disabled={mutation.status === 'pending'}
           />
           <Text mt="md" className="text-red-500">
             {message}
           </Text>
-          <Button type="submit" mt="lg">
+          <Button type="submit" mt="lg" loading={mutation.status === 'pending'}>
             Login
           </Button>
         </form>

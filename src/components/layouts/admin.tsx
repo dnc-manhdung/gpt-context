@@ -28,7 +28,7 @@ const AdminLayout: React.FC<LayoutProps> = ({ children }) => {
 
   useEffect(() => {
     if (!accessToken) {
-      router.push('/')
+      router.push('/login')
     }
   }, [accessToken, router])
 
