@@ -3,84 +3,59 @@ import { useForm } from '@mantine/form'
 import { IconSend2 } from '@tabler/icons-react'
 import { ConversationType, MessageType } from '~/types/conversation'
 import { useConversation } from '~/hooks/useConversation'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { useSelector } from 'react-redux'
+import { RootState } from '~/store'
 
 interface FormValues {
-  question: string
+  content: string
 }
 
 interface QuestionFormProps {
-  conversationData: ConversationType
-  setConversationData: (conversation: ConversationType) => void
-  startChatLoading: () => void
-  stopChatLoading: () => void
+  id: number
+  refetchConversation: () => void
+  setPendingMessage: (message: string) => void
 }
 
 const QuestionForm: React.FC<QuestionFormProps> = ({
-  conversationData,
-  setConversationData,
-  startChatLoading,
-  stopChatLoading
+  id,
+  refetchConversation,
+  setPendingMessage
 }) => {
-  const { sendQuestion } = useConversation
+  const { sendMessage } = useConversation
+
+  const accessToken = useSelector((state: RootState) => state.auth.access_token)
 
   const form = useForm<FormValues>({
     initialValues: {
-      question: ''
+      content: ''
     }
-  })
-
-  const fetchQuestion = async () => {
-    const newMessage = {
-      id: Date.now(),
-      type: 0,
-      message: form.getValues().question
-    }
-
-    if (newMessage.message) {
-      startChatLoading()
-    }
-
-    // if (newMessage.message) {
-    //   setConversationData({
-    //     ...conversationData,
-    //     messages: [...conversationData.messages, newMessage]
-    //   })
-    // }
-
-    // const data = await sendQuestion(form.getValues().question)
-    // const ans = data.data as MessageType
-
-    // if (newMessage.message) {
-    //   stopChatLoading()
-    // }
-
-    // if (newMessage.message) {
-    //   setConversationData({
-    //     ...conversationData,
-    //     messages: [...conversationData.messages, newMessage, ans]
-    //   })
-    // }
-
-    form.reset()
-
-    return conversationData || null
-  }
-
-  const { isLoading } = useQuery({
-    queryKey: ['question'],
-    queryFn: fetchQuestion
   })
 
   const handleSubmit = async () => {
-    await fetchQuestion()
+    if (!accessToken) {
+      throw new Error('Access token is required')
+    }
+
+    setPendingMessage(form.getValues().content)
+
+    await sendMessage(accessToken, id, form.getValues())
+    form.reset()
+
+    refetchConversation()
+
+    setPendingMessage('')
   }
 
+  const mutation = useMutation({
+    mutationFn: () => handleSubmit()
+  })
+
   return (
-    <form onSubmit={form.onSubmit(() => handleSubmit())}>
+    <form onSubmit={form.onSubmit(() => mutation.mutate())}>
       <Flex align="flex-end" gap={16}>
         <Textarea
-          {...form.getInputProps('question')}
+          {...form.getInputProps('content')}
           className="w-[640px]"
           label="Ask here"
           autosize
@@ -89,7 +64,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
         <ActionIcon
           size={36}
           type="submit"
-          disabled={!form.getValues().question || isLoading}
+          disabled={!form.getValues().content || mutation.status === 'pending'}
         >
           <IconSend2 />
         </ActionIcon>
