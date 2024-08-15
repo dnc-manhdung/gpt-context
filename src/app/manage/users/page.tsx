@@ -1,10 +1,12 @@
 'use client'
 
 import { Button, Center, Flex, Loader, Table, Text } from '@mantine/core'
+import { useDisclosure } from '@mantine/hooks'
 import { IconUserPlus } from '@tabler/icons-react'
 import { useQuery } from '@tanstack/react-query'
 import { useSelector } from 'react-redux'
 import AdminLayout from '~/components/layouts/admin'
+import RegisterModal from '~/components/manage/users/register-modal'
 import { useUsers } from '~/hooks/useUsers'
 import { RootState } from '~/store'
 import { UserType } from '~/types/user'
@@ -12,6 +14,7 @@ import { UserType } from '~/types/user'
 const Page: React.FC = () => {
   const { getUsers } = useUsers
   const accessToken = useSelector((state: RootState) => state.auth.access_token)
+  const [opened, { open, close }] = useDisclosure(false)
 
   const fetchUsers = async (): Promise<UserType[]> => {
     if (!accessToken) {
@@ -25,7 +28,8 @@ const Page: React.FC = () => {
   const {
     data: users,
     error,
-    isLoading
+    isLoading,
+    refetch
   } = useQuery<UserType[], Error>({
     queryKey: ['users'],
     queryFn: fetchUsers
@@ -44,12 +48,17 @@ const Page: React.FC = () => {
   return (
     <AdminLayout>
       <Center className="px-[100px]">
+        <RegisterModal opened={opened} close={close} refetch={refetch} />
         <Flex direction="column" className="w-full mt-10" align="center">
           <Text size="xl" className="font-bold">
             Manage Users
           </Text>
           <Flex className="mt-16 self-end">
-            <Button variant="light" rightSection={<IconUserPlus size={16} />}>
+            <Button
+              variant="light"
+              rightSection={<IconUserPlus size={16} />}
+              onClick={open}
+            >
               Add new user
             </Button>
           </Flex>
