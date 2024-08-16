@@ -6,13 +6,15 @@ interface ConversationOptionsProps {
   onClose: () => void
   changeName: () => void
   openContextModal: () => void
+  deleteConversation: () => void
 }
 
 const ConversationOptions: React.FC<ConversationOptionsProps> = ({
   isOpen,
   onClose,
   changeName,
-  openContextModal
+  openContextModal,
+  deleteConversation
 }) => {
   const optionsRef = useRef<HTMLDivElement>(null)
 
@@ -57,7 +59,10 @@ const ConversationOptions: React.FC<ConversationOptionsProps> = ({
         >
           Change name
         </Button>
-        <Button className="hover:bg-gray-50 bg-transparent text-black text-base font-normal hover:text-gray-900 p-2 rounded-md w-full text-left">
+        <Button
+          className="hover:bg-gray-50 bg-transparent text-black text-base font-normal hover:text-gray-900 p-2 rounded-md w-full text-left"
+          onClick={deleteConversation}
+        >
           Delete
         </Button>
         <Button className="hover:bg-gray-50 bg-transparent text-black text-base font-normal hover:text-gray-900 p-2 rounded-md w-full text-left">

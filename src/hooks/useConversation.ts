@@ -21,28 +21,6 @@ export const useConversation = {
     return await fetchData(`/message/get/${id}`, token, null, 'GET')
   },
 
-  sendQuestion: async (message: string) => {
-    setTimeout(() => {}, 10000)
-
-    if (message) {
-      return {
-        code: 1000,
-        message: '',
-        data: {
-          id: Date.now() + 1,
-          message: 'hehe1',
-          type: 1
-        }
-      }
-    }
-
-    return {
-      code: 1000,
-      message: '',
-      data: null
-    }
-  },
-
   sendMessage: async (
     token: string,
     id: number,
@@ -76,5 +54,9 @@ export const useConversation = {
     formData: UpdateConversationFormValues
   ) => {
     return await fetchData(`/thread/update/${id}`, token, formData, 'PATCH')
+  },
+
+  deleteConversation: async (token: string, id: number) => {
+    return await fetchData(`/thread/${id}`, token, null, 'DELETE')
   }
 }

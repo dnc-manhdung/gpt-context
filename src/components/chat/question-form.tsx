@@ -1,7 +1,6 @@
 import { ActionIcon, Flex, Textarea } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { IconSend2 } from '@tabler/icons-react'
-import { ConversationType, MessageType } from '~/types/conversation'
 import { useConversation } from '~/hooks/useConversation'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useSelector } from 'react-redux'
