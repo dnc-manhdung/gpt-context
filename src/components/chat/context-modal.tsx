@@ -12,11 +12,12 @@ interface ContextModalProps {
   close: () => void
   id: number
   currentContext: string
-  title: string
+  currentTitle: string
   refetchConversation: () => void
 }
 
 interface FormValues {
+  title: string
   context: string
 }
 
@@ -25,13 +26,14 @@ const ContextModal: React.FC<ContextModalProps> = ({
   close,
   id,
   currentContext,
-  title,
+  currentTitle,
   refetchConversation
 }) => {
-  const { addContext } = useConversation
+  const { updateConversation } = useConversation
 
   const form = useForm<FormValues>({
     initialValues: {
+      title: currentTitle,
       context: currentContext
     }
   })
@@ -43,7 +45,7 @@ const ContextModal: React.FC<ContextModalProps> = ({
       throw new Error('Access token is required')
     }
 
-    const res = await addContext(accessToken, id, form.getValues())
+    const res = await updateConversation(accessToken, id, form.getValues())
 
     if (res) {
       close()
@@ -56,16 +58,25 @@ const ContextModal: React.FC<ContextModalProps> = ({
   })
 
   return (
-    <Modal opened={opened} onClose={close} title={`Add context for ${title}`}>
+    <Modal
+      opened={opened}
+      onClose={close}
+      title={`Update information for conversation`}
+    >
       <form
         className="w-full flex flex-col gap-4"
         onSubmit={form.onSubmit(() => mutation.mutate())}
       >
         <TextInput
+          {...form.getInputProps('title')}
+          key={form.key('title')}
+          label="Title"
+          disabled={mutation.status === 'pending'}
+        />
+        <TextInput
           {...form.getInputProps('context')}
           key={form.key('context')}
           label="Context"
-          className="mt-4"
           disabled={mutation.status === 'pending'}
         />
         <Button

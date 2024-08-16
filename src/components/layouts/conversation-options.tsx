@@ -51,7 +51,7 @@ const ConversationOptions: React.FC<ConversationOptionsProps> = ({
           className="hover:bg-gray-50 bg-transparent text-black text-base font-normal hover:text-gray-900 p-2 rounded-md w-full text-left"
           onClick={openContextModal}
         >
-          Add context
+          Update information
         </Button>
         <Button
           className="hover:bg-gray-50 bg-transparent text-black text-base font-normal hover:text-gray-900 p-2 rounded-md w-full text-left"

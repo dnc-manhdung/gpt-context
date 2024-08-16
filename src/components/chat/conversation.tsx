@@ -8,11 +8,13 @@ import { MessageType } from '~/types/conversation'
 interface ConversationProps {
   messages: MessageType[] | undefined
   pendingMessage: string
+  streamMessage: string
 }
 
 const Conversation: React.FC<ConversationProps> = ({
   messages,
-  pendingMessage
+  pendingMessage,
+  streamMessage
 }) => {
   const conversationRef = useRef<HTMLDivElement>(null)
 
@@ -58,7 +60,13 @@ const Conversation: React.FC<ConversationProps> = ({
           <div className="self-end bg-gray-100 px-5 py-3 rounded-3xl max-w-[450px]">
             {pendingMessage}
           </div>
-          <span className="mx-auto text-gray-400">Wait a minute...</span>
+          {streamMessage ? (
+            <div className="self-start bg-gray-600 text-white px-5 py-3 rounded-3xl max-w-[450px]">
+              {streamMessage}
+            </div>
+          ) : (
+            <span className="mx-auto text-gray-400">Wait a minute...</span>
+          )}
         </>
       )}
     </Flex>

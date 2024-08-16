@@ -14,5 +14,9 @@ export const useUsers = {
 
   createUser: async (token: string, formData: RegisterFormValues) => {
     return await fetchData('/user/register', token, formData, 'POST')
+  },
+
+  deactiveUser: async (token: string, id: number) => {
+    return await fetchData(`/user/deactivate/${id}`, token, null, 'PATCH')
   }
 }

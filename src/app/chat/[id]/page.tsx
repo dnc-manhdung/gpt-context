@@ -4,7 +4,7 @@ import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import DefaultLayout from '~/components/layouts/default'
 import { useConversation } from '~/hooks/useConversation'
-import { ConversationType, MessageType } from '~/types/conversation'
+import { MessageType } from '~/types/conversation'
 import { useQuery } from '@tanstack/react-query'
 import { Center, Flex, Loader } from '@mantine/core'
 import Conversation from '~/components/chat/conversation'
@@ -16,6 +16,7 @@ const Page = () => {
   const params = useParams()
   const { id } = params
   const [pendingMessage, setPendingMessage] = useState<string>('')
+  const [streamMessage, setStreamMessaage] = useState<string>('')
   const accessToken = useSelector((state: RootState) => state.auth.access_token)
 
   const { getConversation } = useConversation
@@ -54,11 +55,13 @@ const Page = () => {
           <Conversation
             messages={messages}
             pendingMessage={pendingMessage}
+            streamMessage={streamMessage}
           ></Conversation>
           <QuestionForm
             id={Number(id)}
             refetchConversation={refetch}
             setPendingMessage={setPendingMessage}
+            setStreamMessage={setStreamMessaage}
           />
         </Flex>
       ) : (

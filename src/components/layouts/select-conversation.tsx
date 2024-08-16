@@ -34,7 +34,7 @@ const SelectConversation: React.FC<SelectConversationProps> = ({
   const [isChangingTitle, setIsChangingTitle] = useState<boolean>(false)
   const accessToken = useSelector((state: RootState) => state.auth.access_token)
 
-  const { updateTitle } = useConversation
+  const { updateConversation } = useConversation
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -74,7 +74,7 @@ const SelectConversation: React.FC<SelectConversationProps> = ({
       throw new Error('Access token is required')
     }
 
-    const res = await updateTitle(accessToken, id, form.getValues())
+    const res = await updateConversation(accessToken, id, form.getValues())
 
     if (res) {
       refetchConversation()
@@ -146,7 +146,7 @@ const SelectConversation: React.FC<SelectConversationProps> = ({
         close={close}
         id={id}
         currentContext={context}
-        title={title}
+        currentTitle={title}
         refetchConversation={refetchConversation}
       />
       <DeleteModal id={id} opened={deleteOpened} close={deleteClose} />
