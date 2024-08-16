@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '~/store'
 import { useConversation } from '~/hooks/useConversation'
 import { useMutation } from '@tanstack/react-query'
+import DeleteModal from './delete-modal'
 
 interface SelectConversationProps {
   id: number
@@ -45,6 +46,9 @@ const SelectConversation: React.FC<SelectConversationProps> = ({
   })
 
   const [opened, { open, close }] = useDisclosure(false)
+
+  const [deleteOpened, { open: deleteOpen, close: deleteClose }] =
+    useDisclosure(false)
 
   const toggleOptions = () => {
     setIsOptionsOpen(!isOptionsOpen)
@@ -135,6 +139,7 @@ const SelectConversation: React.FC<SelectConversationProps> = ({
         onClose={handleIconClick}
         changeName={openChangeName}
         openContextModal={open}
+        deleteConversation={deleteOpen}
       />
       <ContextModal
         opened={opened}
@@ -144,6 +149,7 @@ const SelectConversation: React.FC<SelectConversationProps> = ({
         title={title}
         refetchConversation={refetchConversation}
       />
+      <DeleteModal id={id} opened={deleteOpened} close={deleteClose} />
     </Container>
   )
 }
