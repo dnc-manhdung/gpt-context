@@ -35,6 +35,7 @@ const DefaultLayout: React.FC<LayoutProps> = ({ children }) => {
     }
 
     const res = await getConversations(accessToken)
+    console.log(res)
     return res
   }
 

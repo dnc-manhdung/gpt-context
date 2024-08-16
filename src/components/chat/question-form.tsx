@@ -14,12 +14,14 @@ interface QuestionFormProps {
   id: number
   refetchConversation: () => void
   setPendingMessage: (message: string) => void
+  setStreamMessage: (chunk: string) => void
 }
 
 const QuestionForm: React.FC<QuestionFormProps> = ({
   id,
   refetchConversation,
-  setPendingMessage
+  setPendingMessage,
+  setStreamMessage
 }) => {
   const { sendMessage } = useConversation
 
@@ -38,12 +40,14 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
 
     setPendingMessage(form.getValues().content)
 
-    await sendMessage(accessToken, id, form.getValues())
+    const formData = form.getValues()
     form.reset()
+    await sendMessage(accessToken, id, formData, setStreamMessage)
 
     refetchConversation()
 
     setPendingMessage('')
+    setStreamMessage('')
   }
 
   const mutation = useMutation({
@@ -55,6 +59,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
       <Flex align="flex-end" gap={16}>
         <Textarea
           {...form.getInputProps('content')}
+          key={form.key('content')}
           className="w-[640px]"
           label="Ask here"
           autosize

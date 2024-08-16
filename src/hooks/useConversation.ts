@@ -1,15 +1,12 @@
-import { fetchData } from './fetch'
+import { fetchData, fetchStreamData } from './fetch'
 
 interface NewConversationFormValues {
   title: string
 }
 
-interface AddContextFormValues {
-  context: string
-}
-
 interface UpdateConversationFormValues {
   title: string
+  context?: string
 }
 
 interface SendMessageFormValues {
@@ -18,15 +15,23 @@ interface SendMessageFormValues {
 
 export const useConversation = {
   getConversation: async (token: string, id: number) => {
-    return await fetchData(`/message/get/${id}`, token, null, 'GET')
+    return await fetchData(`/threads/${id}/messages`, token, null, 'GET')
   },
 
   sendMessage: async (
     token: string,
     id: number,
-    formData: SendMessageFormValues
+    formData: SendMessageFormValues,
+    onStreamUpdate: (chunk: string) => void
   ) => {
-    return await fetchData(`/message/send/${id}`, token, formData, 'POST')
+    console.log(formData)
+    return await fetchStreamData(
+      `/threads/${id}/messages`,
+      token,
+      formData,
+      'POST',
+      onStreamUpdate
+    )
   },
 
   createConversation: async (
@@ -37,26 +42,18 @@ export const useConversation = {
   },
 
   getConversations: async (token: string) => {
-    return await fetchData('/thread/findOwnThreads', token, null, 'GET')
+    return await fetchData('/users/threads', token, null, 'GET')
   },
 
-  addContext: async (
-    token: string,
-    id: number,
-    formData: AddContextFormValues
-  ) => {
-    return await fetchData(`/thread/addContext/${id}`, token, formData, 'POST')
-  },
-
-  updateTitle: async (
+  updateConversation: async (
     token: string,
     id: number,
     formData: UpdateConversationFormValues
   ) => {
-    return await fetchData(`/thread/update/${id}`, token, formData, 'PATCH')
+    return await fetchData(`/threads/${id}`, token, formData, 'PATCH')
   },
 
   deleteConversation: async (token: string, id: number) => {
-    return await fetchData(`/thread/${id}`, token, null, 'DELETE')
+    return await fetchData(`/threads/${id}`, token, null, 'DELETE')
   }
 }
