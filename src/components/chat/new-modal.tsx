@@ -2,31 +2,36 @@
 'use client'
 
 import { useDisclosure } from '@mantine/hooks'
-import { Button, Flex, Modal, TextInput } from '@mantine/core'
+import { Button, Flex, Modal, Text, TextInput } from '@mantine/core'
 import { useForm } from '@mantine/form'
-import { forwardRef, useImperativeHandle } from 'react'
+import React, { forwardRef, useImperativeHandle, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useConversation } from '~/hooks/useConversation'
 import { RootState } from '~/store'
 import { useSelector } from 'react-redux'
 import { useMutation } from '@tanstack/react-query'
+import { notifications } from '@mantine/notifications'
+
+interface NewModalProps {
+  opened: boolean
+  close: () => void
+  showNotification: (message: string) => void
+}
 
 interface FormValues {
   title: string
 }
 
-const NewModal = forwardRef((_, ref) => {
+const NewModal: React.FC<NewModalProps> = ({
+  opened,
+  close,
+  showNotification
+}) => {
   const { createConversation } = useConversation
   const accessToken =
     useSelector((state: RootState) => state.auth.access_token) || ''
 
-  const [opened, { open, close }] = useDisclosure(false)
-
   const router = useRouter()
-
-  useImperativeHandle(ref, () => ({
-    open
-  }))
 
   const form = useForm<FormValues>({
     mode: 'uncontrolled',
@@ -41,7 +46,12 @@ const NewModal = forwardRef((_, ref) => {
   const handleSubmit = async () => {
     const res = await createConversation(accessToken, form.getValues())
 
-    router.push(`/chat/${res.id}`)
+    if (res.message) {
+      showNotification(res.message)
+      close()
+    } else {
+      router.push(`/chat/${res.id}`)
+    }
   }
 
   const mutation = useMutation({
@@ -78,6 +88,6 @@ const NewModal = forwardRef((_, ref) => {
       </form>
     </Modal>
   )
-})
+}
 
 export default NewModal
