@@ -64,21 +64,21 @@ const Page: React.FC = () => {
           <Text size="xl" className="font-bold">
             Manage Conversations
           </Text>
-          <Flex
-            justify="flex-start"
+          <form
             className="self-start"
-            align="flex-end"
-            gap={16}
+            onSubmit={form.onSubmit(() => refetch())}
           >
-            <TextInput
-              {...form.getInputProps('username')}
-              key={form.key('username')}
-              label="Find conversations by username"
-              mt={8}
-              className="w-[500px]"
-            />
-            <Button>Search</Button>
-          </Flex>
+            <Flex justify="flex-start" align="flex-end" gap={16}>
+              <TextInput
+                {...form.getInputProps('username')}
+                key={form.key('username')}
+                label="Find conversations by username"
+                mt={8}
+                className="w-[500px]"
+              />
+              <Button type="submit">Search</Button>
+            </Flex>
+          </form>
           <Table withTableBorder highlightOnHover className="mt-4">
             <Table.Thead>
               <Table.Tr>
@@ -86,14 +86,13 @@ const Page: React.FC = () => {
                 <Table.Th>Context</Table.Th>
                 <Table.Th>Creator Email</Table.Th>
                 <Table.Th>Creator Username</Table.Th>
-                <Table.Th></Table.Th>
               </Table.Tr>
             </Table.Thead>
 
             <Table.Tbody>
               {isLoading ? (
                 <Table.Tr>
-                  <Table.Td colSpan={5}>
+                  <Table.Td colSpan={4}>
                     <Loader />
                   </Table.Td>
                 </Table.Tr>
@@ -108,9 +107,6 @@ const Page: React.FC = () => {
                       </Table.Td>
                       <Table.Td>{conversation.creator.email}</Table.Td>
                       <Table.Td>{conversation.creator.username}</Table.Td>
-                      <Table.Td>
-                        <Button color="red">Deactivate</Button>
-                      </Table.Td>
                     </Table.Tr>
                   </>
                 ))
