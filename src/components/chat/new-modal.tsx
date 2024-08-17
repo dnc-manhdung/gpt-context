@@ -10,18 +10,23 @@ import { useConversation } from '~/hooks/useConversation'
 import { RootState } from '~/store'
 import { useSelector } from 'react-redux'
 import { useMutation } from '@tanstack/react-query'
+import { notifications } from '@mantine/notifications'
 
 interface NewModalProps {
   opened: boolean
   close: () => void
-  setMessage?: (message: string) => void
+  showNotification: (message: string) => void
 }
 
 interface FormValues {
   title: string
 }
 
-const NewModal: React.FC<NewModalProps> = ({ opened, close, setMessage }) => {
+const NewModal: React.FC<NewModalProps> = ({
+  opened,
+  close,
+  showNotification
+}) => {
   const { createConversation } = useConversation
   const accessToken =
     useSelector((state: RootState) => state.auth.access_token) || ''
@@ -42,9 +47,8 @@ const NewModal: React.FC<NewModalProps> = ({ opened, close, setMessage }) => {
     const res = await createConversation(accessToken, form.getValues())
 
     if (res.message) {
-      setMessage(res.message)
+      showNotification(res.message)
       close()
-      console.log(res)
     } else {
       router.push(`/chat/${res.id}`)
     }
