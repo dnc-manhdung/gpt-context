@@ -2,7 +2,7 @@
 
 import { Button, Center, Text } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import NewModal from '~/components/chat/new-modal'
 import DefaultLayout from '~/components/layouts/default'
 

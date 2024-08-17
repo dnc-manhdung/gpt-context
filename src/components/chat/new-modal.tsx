@@ -14,7 +14,7 @@ import { useMutation } from '@tanstack/react-query'
 interface NewModalProps {
   opened: boolean
   close: () => void
-  setMessage: (message: string) => void
+  setMessage?: (message: string) => void
 }
 
 interface FormValues {

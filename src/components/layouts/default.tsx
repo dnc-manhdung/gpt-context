@@ -3,7 +3,7 @@
 import { ActionIcon, AppShell, Flex, Loader, Text } from '@mantine/core'
 import { IconPencilPlus, IconLogout } from '@tabler/icons-react'
 import Navbar from './navbar'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import NewModal from '../chat/new-modal'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/navigation'
@@ -12,6 +12,7 @@ import { clearToken } from '~/store/slices/authSlice'
 import { useConversation } from '~/hooks/useConversation'
 import { useQuery } from '@tanstack/react-query'
 import { ThreadType } from '~/types/conversation'
+import { useDisclosure } from '@mantine/hooks'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -21,13 +22,9 @@ const DefaultLayout: React.FC<LayoutProps> = ({ children }) => {
   const dispatch = useDispatch()
   const router = useRouter()
   const accessToken = useSelector((state: RootState) => state.auth.access_token)
-  const newModalRef = useRef<{ open: () => void }>(null)
+  const [opened, { open, close }] = useDisclosure(false)
 
   const { getConversations } = useConversation
-
-  const handleOpenModal = () => {
-    newModalRef.current?.open()
-  }
 
   const fetchConversations = async () => {
     if (!accessToken) {
@@ -72,7 +69,7 @@ const DefaultLayout: React.FC<LayoutProps> = ({ children }) => {
             <Text className="font-bold text-cyan-500 text-2xl" component="a">
               GPT-Context
             </Text>
-            <ActionIcon size="40" onClick={handleOpenModal}>
+            <ActionIcon size="40" onClick={open}>
               <IconPencilPlus />
             </ActionIcon>
           </Flex>
@@ -89,7 +86,7 @@ const DefaultLayout: React.FC<LayoutProps> = ({ children }) => {
         )}
       </AppShell.Navbar>
       <AppShell.Main className="h-fit">{children}</AppShell.Main>
-      <NewModal ref={newModalRef} />
+      <NewModal opened={opened} close={close} />
     </AppShell>
   )
 }
