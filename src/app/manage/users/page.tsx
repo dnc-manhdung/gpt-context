@@ -4,8 +4,10 @@ import { Button, Center, Flex, Loader, Table, Text } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { IconUserPlus } from '@tabler/icons-react'
 import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import AdminLayout from '~/components/layouts/admin'
+import DeactivateModal from '~/components/manage/users/deactivate-modal'
 import RegisterModal from '~/components/manage/users/register-modal'
 import { useUsers } from '~/hooks/useUsers'
 import { RootState } from '~/store'
@@ -15,6 +17,7 @@ const Page: React.FC = () => {
   const { getUsers } = useUsers
   const accessToken = useSelector((state: RootState) => state.auth.access_token)
   const [opened, { open, close }] = useDisclosure(false)
+  const [deactivateId, setDeactivateId] = useState<number>(0)
 
   const fetchUsers = async (): Promise<UserType[]> => {
     if (!accessToken) {
@@ -24,6 +27,9 @@ const Page: React.FC = () => {
     const res = await getUsers(accessToken)
     return res
   }
+
+  const [openedDeactivate, { open: openDeactivate, close: closeDeactivate }] =
+    useDisclosure(false)
 
   const {
     data: users,
@@ -43,6 +49,11 @@ const Page: React.FC = () => {
         </Center>
       </AdminLayout>
     )
+  }
+
+  const handleOpenDeactivate = (id: number) => {
+    setDeactivateId(id)
+    openDeactivate()
   }
 
   return (
@@ -70,31 +81,47 @@ const Page: React.FC = () => {
                 <Table.Th>Is Verified</Table.Th>
                 <Table.Th>Role</Table.Th>
                 <Table.Th>Number of Conversations</Table.Th>
+                <Table.Th></Table.Th>
               </Table.Tr>
             </Table.Thead>
 
             <Table.Tbody>
               {isLoading ? (
                 <Table.Tr>
-                  <Table.Td colSpan={5}>
+                  <Table.Td colSpan={6}>
                     <Loader />
                   </Table.Td>
                 </Table.Tr>
               ) : (
                 users &&
                 users.map((user) => (
-                  <Table.Tr key={user.id}>
-                    <Table.Td>{user.email}</Table.Td>
-                    <Table.Td>{user.username}</Table.Td>
-                    <Table.Td>{user.isVerified ? 'Yes' : 'No'}</Table.Td>
-                    <Table.Td>{user.role}</Table.Td>
-                    <Table.Td>{user.threadsCreated.length}</Table.Td>
-                  </Table.Tr>
+                  <>
+                    <Table.Tr key={user.id}>
+                      <Table.Td>{user.email}</Table.Td>
+                      <Table.Td>{user.username}</Table.Td>
+                      <Table.Td>{user.isVerified ? 'Yes' : 'No'}</Table.Td>
+                      <Table.Td>{user.role}</Table.Td>
+                      <Table.Td>{user.threadsCreated.length}</Table.Td>
+                      <Table.Td>
+                        <Button
+                          color="red"
+                          onClick={() => handleOpenDeactivate(user.id)}
+                        >
+                          Deactivate
+                        </Button>
+                      </Table.Td>
+                    </Table.Tr>
+                  </>
                 ))
               )}
             </Table.Tbody>
           </Table>
         </Flex>
+        <DeactivateModal
+          opened={openedDeactivate}
+          close={closeDeactivate}
+          id={deactivateId}
+        />
       </Center>
     </AdminLayout>
   )
