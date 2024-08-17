@@ -9,14 +9,14 @@ interface RegisterFormValues {
 
 export const useUsers = {
   getUsers: async (token: string) => {
-    return await fetchData('/user', token, null)
+    return await fetchData('/users', token, null)
   },
 
   createUser: async (token: string, formData: RegisterFormValues) => {
-    return await fetchData('/user/register', token, formData, 'POST')
+    return await fetchData('/users', token, formData, 'POST')
   },
 
-  deactiveUser: async (token: string, id: number) => {
-    return await fetchData(`/user/deactivate/${id}`, token, null, 'PATCH')
+  deactivateUser: async (token: string, id: number) => {
+    return await fetchData(`/users/deactivate/${id}`, token, null, 'PATCH')
   }
 }
