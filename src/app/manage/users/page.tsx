@@ -1,6 +1,14 @@
 'use client'
 
-import { Button, Center, Flex, Loader, Table, Text } from '@mantine/core'
+import {
+  Button,
+  Center,
+  Flex,
+  Loader,
+  Pagination,
+  Table,
+  Text
+} from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import { IconUserPlus } from '@tabler/icons-react'
 import { useQuery } from '@tanstack/react-query'
@@ -18,14 +26,18 @@ const Page: React.FC = () => {
   const accessToken = useSelector((state: RootState) => state.auth.access_token)
   const [opened, { open, close }] = useDisclosure(false)
   const [deactivateId, setDeactivateId] = useState<number>(0)
+  const [page, setPage] = useState<number>(1)
+  const [totalPage, setTotalPage] = useState<number>(1)
 
   const fetchUsers = async (): Promise<UserType[]> => {
     if (!accessToken) {
       throw new Error('Access token is required')
     }
 
-    const res = await getUsers(accessToken)
-    return res
+    const res = await getUsers(accessToken, page)
+    setTotalPage(res.meta.total_page)
+    console.log(res.meta.total_page)
+    return res.data
   }
 
   const [openedDeactivate, { open: openDeactivate, close: closeDeactivate }] =
@@ -37,7 +49,7 @@ const Page: React.FC = () => {
     isLoading,
     refetch
   } = useQuery<UserType[], Error>({
-    queryKey: ['users'],
+    queryKey: ['users', page],
     queryFn: fetchUsers
   })
 
@@ -116,6 +128,12 @@ const Page: React.FC = () => {
               )}
             </Table.Tbody>
           </Table>
+          <Pagination
+            value={page}
+            onChange={setPage}
+            total={totalPage}
+            className="mt-4"
+          />
         </Flex>
         <DeactivateModal
           opened={openedDeactivate}

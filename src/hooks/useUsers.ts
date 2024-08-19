@@ -1,3 +1,4 @@
+import { USERS_LIMIT } from '~/constants/limit'
 import { fetchData } from './fetch'
 
 interface RegisterFormValues {
@@ -8,8 +9,10 @@ interface RegisterFormValues {
 }
 
 export const useUsers = {
-  getUsers: async (token: string) => {
-    return await fetchData('/users', token, null)
+  getUsers: async (token: string, page: number, limit?: number) => {
+    if (!limit) limit = USERS_LIMIT
+
+    return await fetchData(`/users?page=${page}&limit=${2}`, token, null)
   },
 
   createUser: async (token: string, formData: RegisterFormValues) => {

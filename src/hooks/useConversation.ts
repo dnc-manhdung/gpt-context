@@ -1,4 +1,4 @@
-import { MESSAGE_LIMIT } from '~/constants/message'
+import { MESSAGE_LIMIT } from '~/constants/limit'
 import { fetchData, fetchStreamData } from './fetch'
 
 interface NewConversationFormValues {
