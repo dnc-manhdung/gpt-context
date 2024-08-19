@@ -9,14 +9,22 @@ type MessageThread = {
   context?: string
 }
 
-export type MessageType = {
-  id: number
-  created_at: Date
-  update_at: Date
-  delete_at: Date | null
+type RepliedMessageType = {
+  id: number | string
+  created_at?: Date
+  updated_at?: Date
+  deleted_at?: Date
   content: string
-  replyTo: MessageThread | null
-  thread: MessageThread
+}
+
+export type MessageType = {
+  id: number | string
+  created_at?: Date
+  update_at?: Date
+  delete_at?: Date | null
+  content: string
+  replyTo: RepliedMessageType | null
+  thread?: MessageThread
 }
 
 export type MessageResponseType = {
