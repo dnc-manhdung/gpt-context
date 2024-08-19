@@ -75,6 +75,13 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
     mutationFn: () => handleSubmit()
   })
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault()
+      mutation.mutate()
+    }
+  }
+
   return (
     <form onSubmit={form.onSubmit(() => mutation.mutate())}>
       <Flex align="flex-end" gap={16}>
@@ -85,6 +92,7 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
           label="Ask here"
           autosize
           maxRows={6}
+          onKeyDown={handleKeyDown}
         />
         <ActionIcon
           size={36}
