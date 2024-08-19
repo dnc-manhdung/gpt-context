@@ -1,10 +1,10 @@
 'use client'
 
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import DefaultLayout from '~/components/layouts/default'
 import { useConversation } from '~/hooks/useConversation'
-import { MessageType } from '~/types/conversation'
+import { MessageResponseType, MessageType } from '~/types/conversation'
 import { useQuery } from '@tanstack/react-query'
 import { Center, Flex, Loader } from '@mantine/core'
 import Conversation from '~/components/chat/conversation'
@@ -18,6 +18,11 @@ const Page = () => {
   const [pendingMessage, setPendingMessage] = useState<string>('')
   const [streamMessage, setStreamMessaage] = useState<string>('')
   const accessToken = useSelector((state: RootState) => state.auth.access_token)
+  const [page, setPage] = useState<number>(1)
+  const [totalPage, setTotalPage] = useState<number>(10000)
+  const [conversationData, setConversationData] = useState<MessageType[]>([])
+
+  const router = useRouter()
 
   const { getConversation } = useConversation
 
@@ -26,12 +31,24 @@ const Page = () => {
       throw new Error('Access token is required')
     }
 
-    return await getConversation(accessToken, Number(id))
+    const res =
+      page <= totalPage
+        ? await getConversation(accessToken, Number(id), page)
+        : null
+
+    if (res.statusCode === 404) {
+      router.push('/chat')
+    } else if (page <= totalPage) {
+      setTotalPage(res.meta.total_page)
+      setPage(page + 1)
+    }
+    setConversationData([...res.data, ...conversationData])
+
+    return conversationData
   }
 
   const {
-    data: messages,
-    error,
+    data: data,
     isLoading,
     refetch
   } = useQuery<MessageType[]>({
@@ -45,7 +62,7 @@ const Page = () => {
         <Center>
           <Loader size={48} />
         </Center>
-      ) : messages ? (
+      ) : data ? (
         <Flex
           className="h-dvh -mt-[100px]"
           direction="column"
@@ -53,9 +70,11 @@ const Page = () => {
           align="center"
         >
           <Conversation
-            messages={messages}
+            messages={conversationData}
             pendingMessage={pendingMessage}
             streamMessage={streamMessage}
+            refetch={refetch}
+            isLastPage={page > totalPage}
           ></Conversation>
           <QuestionForm
             id={Number(id)}

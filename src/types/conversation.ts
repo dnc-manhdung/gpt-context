@@ -19,6 +19,14 @@ export type MessageType = {
   thread: MessageThread
 }
 
+export type MessageResponseType = {
+  data: MessageType[]
+  meta: {
+    page: number
+    total_page: number
+  }
+}
+
 export type ConversationType = {
   messages: MessageType[]
 }
