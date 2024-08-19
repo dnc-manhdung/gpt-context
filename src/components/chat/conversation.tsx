@@ -31,6 +31,12 @@ const Conversation: React.FC<ConversationProps> = ({
   }, [pendingMessage, messages, prevScrollHeight])
 
   useEffect(() => {
+    if (windowRef.current && streamMessage) {
+      windowRef.current.scrollTop = windowRef.current.scrollHeight
+    }
+  }, [streamMessage])
+
+  useEffect(() => {
     const handleScroll = () => {
       if (windowRef.current) {
         if (windowRef.current.scrollTop === 0 && !isLastPage) {

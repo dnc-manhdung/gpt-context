@@ -1,3 +1,5 @@
+'use client'
+
 import { ActionIcon, Flex, Textarea } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { IconSend2 } from '@tabler/icons-react'
@@ -5,6 +7,8 @@ import { useConversation } from '~/hooks/useConversation'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useSelector } from 'react-redux'
 import { RootState } from '~/store'
+import { useState } from 'react'
+import { MessageType } from '~/types/conversation'
 
 interface FormValues {
   content: string
@@ -12,18 +16,19 @@ interface FormValues {
 
 interface QuestionFormProps {
   id: number
-  refetchConversation: () => void
   setPendingMessage: (message: string) => void
   setStreamMessage: (chunk: string) => void
+  addMessages: (messages: MessageType[]) => void
 }
 
 const QuestionForm: React.FC<QuestionFormProps> = ({
   id,
-  refetchConversation,
   setPendingMessage,
-  setStreamMessage
+  setStreamMessage,
+  addMessages
 }) => {
   const { sendMessage } = useConversation
+  const sequence = useState<number>(-1)
 
   const accessToken = useSelector((state: RootState) => state.auth.access_token)
 
@@ -42,9 +47,25 @@ const QuestionForm: React.FC<QuestionFormProps> = ({
 
     const formData = form.getValues()
     form.reset()
-    await sendMessage(accessToken, id, formData, setStreamMessage)
+    const res = await sendMessage(accessToken, id, formData, setStreamMessage)
 
-    refetchConversation()
+    const newMessages = [
+      {
+        id: `new-message-${sequence}`,
+        content: formData.content,
+        replyTo: null
+      },
+      {
+        id: `new-message-r-${sequence}`,
+        content: res,
+        replyTo: {
+          id: `new-message-${sequence}`,
+          content: formData.content
+        }
+      }
+    ]
+
+    addMessages(newMessages)
 
     setPendingMessage('')
     setStreamMessage('')

@@ -47,6 +47,10 @@ const Page = () => {
     return conversationData
   }
 
+  const addMessages = (newMessages: MessageType[]) => {
+    setConversationData([...conversationData, ...newMessages])
+  }
+
   const {
     data: data,
     isLoading,
@@ -78,9 +82,9 @@ const Page = () => {
           ></Conversation>
           <QuestionForm
             id={Number(id)}
-            refetchConversation={refetch}
             setPendingMessage={setPendingMessage}
             setStreamMessage={setStreamMessaage}
+            addMessages={addMessages}
           />
         </Flex>
       ) : (
