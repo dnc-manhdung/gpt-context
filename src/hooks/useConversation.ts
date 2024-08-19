@@ -1,3 +1,4 @@
+import { MESSAGE_LIMIT } from '~/constants/message'
 import { fetchData, fetchStreamData } from './fetch'
 
 interface NewConversationFormValues {
@@ -14,8 +15,17 @@ interface SendMessageFormValues {
 }
 
 export const useConversation = {
-  getConversation: async (token: string, id: number) => {
-    return await fetchData(`/threads/${id}/messages`, token, null, 'GET')
+  getConversation: async (token: string, id: number, page: number) => {
+    if (!page) {
+      page = 1
+    }
+
+    return await fetchData(
+      `/threads/${id}/messages?limit=${MESSAGE_LIMIT}&page=${page}`,
+      token,
+      null,
+      'GET'
+    )
   },
 
   sendMessage: async (

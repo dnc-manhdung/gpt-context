@@ -1,35 +1,83 @@
 'use client'
 
-import { ActionIcon, Flex } from '@mantine/core'
+import { ActionIcon, Flex, Loader, Text } from '@mantine/core'
 import { IconDots } from '@tabler/icons-react'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { MessageType } from '~/types/conversation'
 
 interface ConversationProps {
   messages: MessageType[] | undefined
   pendingMessage: string
   streamMessage: string
+  refetch: () => void
+  isLastPage: boolean
 }
 
 const Conversation: React.FC<ConversationProps> = ({
   messages,
   pendingMessage,
-  streamMessage
+  streamMessage,
+  refetch,
+  isLastPage
 }) => {
   const conversationRef = useRef<HTMLDivElement>(null)
+  const windowRef = useRef<HTMLDivElement>(null)
+  const [prevScrollHeight, setPrevScrollHeight] = useState<number | null>(null)
 
   useEffect(() => {
-    if (conversationRef.current) {
+    if (conversationRef.current && !prevScrollHeight) {
       conversationRef.current.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [pendingMessage, messages])
+  }, [pendingMessage, messages, prevScrollHeight])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (windowRef.current) {
+        if (windowRef.current.scrollTop === 0 && !isLastPage) {
+          setPrevScrollHeight(windowRef.current.scrollHeight)
+          refetch()
+        }
+      }
+    }
+
+    const container = windowRef.current
+    if (container) {
+      container.addEventListener('scroll', handleScroll)
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener('scroll', handleScroll)
+      }
+    }
+  }, [isLastPage, refetch])
+
+  useEffect(() => {
+    if (windowRef.current && prevScrollHeight) {
+      const newScrollHeight = windowRef.current.scrollHeight
+      const scrollDifference = newScrollHeight - prevScrollHeight
+
+      windowRef.current.scrollTop += scrollDifference
+
+      setPrevScrollHeight(null)
+    }
+  }, [messages, prevScrollHeight])
 
   return (
     <Flex
       direction="column"
       className="w-full max-w-[700px] mb-6 overflow-y-scroll conversation mt-[120px]"
       gap={24}
+      ref={windowRef}
     >
+      {!isLastPage && (
+        <Flex direction="column" className="mx-auto" align="center" gap={8}>
+          <Loader />
+          <Text className="text-gray-500">
+            Waiting for loading previous messages
+          </Text>
+        </Flex>
+      )}
       {messages &&
         messages.map((message) => {
           return (
