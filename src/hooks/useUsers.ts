@@ -12,7 +12,7 @@ export const useUsers = {
   getUsers: async (token: string, page: number, limit?: number) => {
     if (!limit) limit = USERS_LIMIT
 
-    return await fetchData(`/users?page=${page}&limit=${2}`, token, null)
+    return await fetchData(`/users?page=${page}&limit=${limit}`, token, null)
   },
 
   createUser: async (token: string, formData: RegisterFormValues) => {

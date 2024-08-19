@@ -8,12 +8,14 @@ interface DeactivateModalProps {
   close: () => void
   opened: boolean
   id: number
+  refetch: () => void
 }
 
 const DeactivateModal: React.FC<DeactivateModalProps> = ({
   close,
   opened,
-  id
+  id,
+  refetch
 }) => {
   const accessToken = useSelector((state: RootState) => state.auth.access_token)
 
@@ -27,6 +29,7 @@ const DeactivateModal: React.FC<DeactivateModalProps> = ({
     await deactivateUser(accessToken, id)
 
     close()
+    refetch()
   }
 
   const mutation = useMutation({

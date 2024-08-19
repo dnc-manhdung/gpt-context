@@ -117,6 +117,7 @@ const Page: React.FC = () => {
                       <Table.Td>
                         <Button
                           color="red"
+                          disabled={!user.isVerified}
                           onClick={() => handleOpenDeactivate(user.id)}
                         >
                           Deactivate
@@ -139,6 +140,7 @@ const Page: React.FC = () => {
           opened={openedDeactivate}
           close={closeDeactivate}
           id={deactivateId}
+          refetch={refetch}
         />
       </Center>
     </AdminLayout>
