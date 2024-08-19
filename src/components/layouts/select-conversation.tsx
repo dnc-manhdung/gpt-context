@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from 'react'
 import { ActionIcon, Button, Container, Text, TextInput } from '@mantine/core'
 import { IconDots } from '@tabler/icons-react'
@@ -10,6 +12,7 @@ import { RootState } from '~/store'
 import { useConversation } from '~/hooks/useConversation'
 import { useMutation } from '@tanstack/react-query'
 import DeleteModal from './delete-modal'
+import { useRouter } from 'next/navigation'
 
 interface SelectConversationProps {
   id: number
@@ -33,6 +36,7 @@ const SelectConversation: React.FC<SelectConversationProps> = ({
   const [isOptionsOpen, setIsOptionsOpen] = useState<boolean>(false)
   const [isChangingTitle, setIsChangingTitle] = useState<boolean>(false)
   const accessToken = useSelector((state: RootState) => state.auth.access_token)
+  const router = useRouter()
 
   const { updateConversation } = useConversation
 
@@ -91,6 +95,10 @@ const SelectConversation: React.FC<SelectConversationProps> = ({
     setIsChangingTitle(false)
   }
 
+  const goToConversation = (id: number) => {
+    router.push(`/chat/${id}`)
+  }
+
   return (
     <Container
       key={id}
@@ -118,8 +126,8 @@ const SelectConversation: React.FC<SelectConversationProps> = ({
       ) : (
         <Text
           component="a"
-          href={`/chat/${id}`}
-          className="block w-full h-full flex flex-col"
+          onClick={() => goToConversation(id)}
+          className="block w-full h-full flex flex-col cursor-pointer"
         >
           <span>{title}</span>
           <span className="text-xs text-gray-800">
